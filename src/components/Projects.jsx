@@ -1,22 +1,19 @@
 function Projects() {
   const projects = [
-    { title: "Portfolio Website", description: "A personal portfolio built with React and Vite." },
-    { title: "Cybersecurity Lab", description: "Hands-on experiments with OWASP ZAP and Wireshark." },
-    { title: "SQL Database Manager", description: "Mini project for managing student records using SQL." }
+    { title: "Portfolio Website", description: "Built with React and Vite." },
+    { title: "Cybersecurity Lab", description: "Experiments with OWASP ZAP and Wireshark." },
+    { title: "SQL Database Manager", description: "Student records management system." }
   ];
 
   return (
-    <section>
+    <section id="projects">
       <h2>Projects</h2>
       <ul>
-        {projects.map((p, index) => (
-          <li key={index}>
-            <strong>{p.title}</strong>: {p.description}
-          </li>
+        {projects.map((p, i) => (
+          <li key={i}><strong>{p.title}</strong>: {p.description}</li>
         ))}
       </ul>
     </section>
   );
 }
-
 export default Projects;
