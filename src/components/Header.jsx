@@ -1,4 +1,9 @@
-function Header({ name, themeColor }) {
-  return <h1 style={{ color: "blue" }}>{name}'s Portfolio</h1>;
+function Header() {
+  return (
+    <header className="header">
+      <h1>Priyansh Sukhadia's Portfolio</h1>
+    </header>
+  );
 }
+
 export default Header;

@@ -1,11 +1,22 @@
-function Skills({ skillList }) {
+function Skills() {
+  const skills = [
+    "React",
+    "JavaScript",
+    "Cybersecurity",
+    "SQL"
+  ];
+
   return (
-    <section id="skills">
+    <section className="skills">
       <h2>Skills</h2>
 
-        {skillList.map((s) => <li key={s}>{s}</li>)}
-
+      <ul>
+        {skills.map((skill, index) => (
+          <li key={index}>{skill}</li>
+        ))}
+      </ul>
     </section>
   );
 }
+
 export default Skills;

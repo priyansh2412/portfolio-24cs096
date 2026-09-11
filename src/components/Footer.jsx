@@ -1,4 +1,9 @@
 function Footer() {
-  return <footer id="footer">© 2026 Priyansh Sukhadia | Contact: priyansh@example.com</footer>;
+  return (
+    <footer className="footer">
+      <p>© 2026 Priyansh Sukhadia</p>
+    </footer>
+  );
 }
+
 export default Footer;
