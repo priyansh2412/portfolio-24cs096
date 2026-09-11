@@ -260,3 +260,53 @@ body {
   text-decoration: none;
   border-radius: 3px;
 }
+.search-input {
+  width: 300px;
+  max-width: 90%;
+  padding: 10px;
+  margin-bottom: 25px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-size: 13px;
+}
+
+.loading {
+  color: #999;
+  font-size: 13px;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.retry-button {
+  border: none;
+  background-color: purple;
+  color: white;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.retry-button:hover {
+  background-color: #5a005a;
+}
+
+.repo-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: purple;
+  text-decoration: none;
+  font-size: 12px;
+}
+
+.repo-link:hover {
+  text-decoration: underline;
+}
+
+.no-results {
+  color: #999;
+  font-size: 13px;
+}
