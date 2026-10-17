@@ -1,69 +1,56 @@
+
 const BASE_URL = "http://localhost:5000";
 
-export const getTasks = async () => {
-  const response = await fetch(`${BASE_URL}/tasks`);
+const apiRequest = async (path, options = {}) => {
+  const token = sessionStorage.getItem("token");
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch tasks");
+  const response = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      ...(options.body ? { "Content-Type": "application/json" } : {}),
+      ...options.headers,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (response.status === 401) {
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+
+    window.dispatchEvent(new Event("auth:unauthorized"));
+
+    throw new Error("Session expired. Please log in again.");
   }
 
-  return response.json();
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+      data.error ||
+      (data.errors && Object.values(data.errors).join(", ")) ||
+      "Request failed"
+    );
+  }
+
+  return data;
 };
 
-export const createTask = async (task) => {
-  const response = await fetch(`${BASE_URL}/tasks`, {
+export const getTasks = () => apiRequest("/tasks");
+
+export const createTask = (task) =>
+  apiRequest("/tasks", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(task),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    if (data.errors) {
-      throw new Error(Object.values(data.errors).join(", "));
-    }
-
-    throw new Error(data.error || "Failed to create task");
-  }
-
-  return data;
-};
-
-export const updateTask = async (id, task) => {
-  const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+export const updateTask = (id, task) =>
+  apiRequest(`/tasks/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
     body: JSON.stringify(task),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    if (data.errors) {
-      throw new Error(Object.values(data.errors).join(", "));
-    }
-
-    throw new Error(data.error || "Failed to update task");
-  }
-
-  return data;
-};
-
-export const deleteTask = async (id) => {
-  const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+export const deleteTask = (id) =>
+  apiRequest(`/tasks/${id}`, {
     method: "DELETE",
   });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error || "Failed to delete task");
-  }
-
-  return data;
-};

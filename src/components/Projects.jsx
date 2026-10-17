@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   getTasks,
   createTask,
@@ -6,7 +7,8 @@ import {
   deleteTask,
 } from "../api";
 
-function Projects() {
+function Projects({ token, onLogout }) {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,9 +44,27 @@ function Projects() {
     }
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+useEffect(() => {
+  if (!token) {
+    navigate("/login", { replace: true });
+    return;
+  }
+
+  fetchTasks();
+}, [token, navigate]);
+
+useEffect(() => {
+  const handleUnauthorized = () => {
+    if (onLogout) onLogout();
+    navigate("/login", { replace: true });
+  };
+
+  window.addEventListener("auth:unauthorized", handleUnauthorized);
+
+  return () => {
+    window.removeEventListener("auth:unauthorized", handleUnauthorized);
+  };
+}, [navigate, onLogout]);
 
   // Handle form input
   const handleChange = (e) => {
