@@ -54,3 +54,8 @@ export const deleteTask = (id) =>
   apiRequest(`/tasks/${id}`, {
     method: "DELETE",
   });
+export const generateTaskDescription = (title) =>
+  apiRequest("/api/ai/generate-description", {
+    method: "POST",
+    body: JSON.stringify({ title }),
+  });

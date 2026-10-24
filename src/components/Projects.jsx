@@ -5,6 +5,7 @@ import {
   createTask,
   updateTask,
   deleteTask,
+  generateTaskDescription,
 } from "../api";
 
 function Projects({ token, onLogout }) {
@@ -15,7 +16,8 @@ function Projects({ token, onLogout }) {
 
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState(null);
-
+const [aiLoading, setAiLoading] = useState(false);
+const [aiMessage, setAiMessage] = useState("");
   const [search, setSearch] = useState("");
 
   const [form, setForm] = useState({
@@ -75,6 +77,40 @@ useEffect(() => {
       [name]: type === "checkbox" ? checked : value,
     });
   };
+  const handleGenerateDescription = async () => {
+  if (!form.title.trim()) {
+    setAiMessage("Enter a task title first.");
+    return;
+  }
+
+  setAiLoading(true);
+  setAiMessage("");
+
+  try {
+    const result = await generateTaskDescription(form.title);
+
+    if (result.fallback || !result.description) {
+      setAiMessage(
+        result.message ||
+          "AI is unavailable. You can write the description manually."
+      );
+      return;
+    }
+
+    setForm((prev) => ({
+      ...prev,
+      description: result.description,
+    }));
+
+    setAiMessage("Suggestion generated. You can edit it before saving.");
+  } catch (err) {
+    setAiMessage(
+      err.message || "Could not generate a description. Please try again."
+    );
+  } finally {
+    setAiLoading(false);
+  }
+};
 
   // Show toast
   const showToast = (message) => {
@@ -232,12 +268,32 @@ useEffect(() => {
           onChange={handleChange}
         />
 
-        <textarea
-          name="description"
-          placeholder="Task description"
-          value={form.description}
-          onChange={handleChange}
-        />
+       <textarea
+  name="description"
+  placeholder="Task description"
+  value={form.description}
+  onChange={handleChange}
+/>
+
+<button
+  type="button"
+  onClick={handleGenerateDescription}
+  disabled={aiLoading || actionLoading}
+>
+  {aiLoading ? "Generating..." : "Generate Description"}
+</button>
+
+<p className="ai-disclaimer">
+  AI-generated suggestions may need review. You can edit the description
+  before saving. AI suggestions may be unavailable if the service is
+  temporarily unavailable.
+</p>
+
+{aiMessage && (
+  <p className="ai-message" role="status">
+    {aiMessage}
+  </p>
+)}
 
         <select
           name="priority"
