@@ -1,16 +1,16 @@
 
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 
+const Projects = lazy(() => import("./components/Projects"));
+const Contact = lazy(() => import("./components/Contact"));
+const Auth = lazy(() => import("./components/Auth"));
 import NavBar from "./components/NavBar";
-import Header from "./components/Header";
+const Header = lazy(() => import("./components/Header"));
 import About from "./components/About";
 import Skills from "./components/Skills";
-import Projects from "./components/Projects";
 import Footer from "./components/Footer";
-import Contact from "./components/Contact";
 import NotFound from "./components/NotFound";
-import Auth from "./components/Auth";
 
 function App() {
   const [token, setToken] = useState(
@@ -32,7 +32,13 @@ function App() {
   return (
     <>
       <NavBar />
-
+<Suspense
+  fallback={
+    <div className="loading-fallback" role="status">
+      <p>Loading page...</p>
+    </div>
+  }
+>
       <Routes>
         <Route
           path="/"
@@ -77,6 +83,7 @@ function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
     </>
   );
 }
